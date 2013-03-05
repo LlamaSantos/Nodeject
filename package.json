@@ -1,5 +1,5 @@
 {
-    "name" : "Nodeject",
+    "name" : "nodeject",
     "version" : "0.0.1",
     "description" : "A simple dependency injection module for JavaScript.  Works as both a node.js module and as a browser module.  CommonJS compatible.",
     "author" : "James White <james@llamasantos.com>",
