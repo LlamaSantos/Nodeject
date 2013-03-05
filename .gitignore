@@ -161,3 +161,17 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+
+#############
+## WebStorm
+#############
+.idea
+./idea
+
+
+#############
+## Node.js
+#############
+node_modules
+./node_modules
