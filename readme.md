@@ -2,6 +2,8 @@
 
 The container is simple.  You use define and resolve to manage all dependencies.
 
+https://api.travis-ci.org/llamasantos/nodeject.png
+
 ##Todo
 - Cyclical dependency detection.
 - Better lifetime management, singleton flag is nice, but there are more than just transient and singleton lifetimes.
