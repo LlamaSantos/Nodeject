@@ -2,7 +2,7 @@
 
 The container is simple.  You use define and resolve to manage all dependencies.
 
-![Build status](https://api.travis-ci.org/llamasantos/nodeject.png)
+[![Build Status](https://travis-ci.org/LlamaSantos/Nodeject.png?branch=master)](https://travis-ci.org/LlamaSantos/Nodeject)
 
 ##Todo
 - Cyclical dependency detection.
