@@ -42,3 +42,25 @@ function resolve(moduleName) { ... };
 
 var module1 = container.resolve("moduleName");
 ```
+
+###categories
+Categories are a way of configuring multiple items and resolving them under a single name.  This is helpful when configuring
+controllers or presenters where initialization needs to occur in bulk.  Currently the types are returned as an array however
+future versions will return a name/value pair if a formatter is supplied.
+```JavaScript
+// Configure the container with entities having a common category
+container.define({
+    name : "module1",
+    type : MyType,
+    category : "category1"
+})
+.define({
+    name : "module2",
+    type : MyOtherType,
+    category : "category1"
+})
+
+var entities = container.resolve({ category : "category1" });
+assert.ok (entities[0] instanceof MyType);          // asserts true
+assert.ok (entities[1] instanceof MyOtherType);     // asserts true
+```
