@@ -118,4 +118,32 @@ describe("Nodeject", function (){
             assert.equal(s2.value, 1, "Singleton is being created more than once.");
         });
     });
+
+    describe("Defining and resolving categories", function (){
+        var container = null;
+        beforeEach(function (){
+            container = new Nodeject();
+        });
+
+        it ("should add a type to a container.", function (){
+            container.define({
+                name : "Mine",
+                type : Mine,
+                category : "taco"
+            });
+
+            assert.ok ("taco" in container.categories);
+            assert.equal (container.categories["taco"][0], "Mine");
+        });
+
+        it ("should resolve a type when a category is supplied", function (){
+            container.define({ name : "Mine", type : Mine, category : "taco" })
+                .define({ name : "Theirs", type : Theirs, category : "taco"})
+
+            var items = container.resolve({category : "taco"});
+            assert.ok (items.length === 2);
+            assert.ok (items[0] instanceof Mine);
+            assert.ok (items[1] instanceof Theirs);
+        });
+    });
 });
