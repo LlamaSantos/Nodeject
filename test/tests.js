@@ -137,10 +137,27 @@ describe("Nodeject", function (){
         });
 
         it ("should resolve a type when a category is supplied", function (){
+            container.define({ name : "Mine", type : Mine, category : "taco" });
+
+            var items = container.resolve({category : "taco"});
+            assert.ok (items.length === 1);
+            assert.ok (items[0] instanceof Mine);
+        });
+
+        it ('should format the types properly when literal is supplied.', function (){
             container.define({ name : "Mine", type : Mine, category : "taco" })
                 .define({ name : "Theirs", type : Theirs, category : "taco"})
 
-            var items = container.resolve({category : "taco"});
+            var items = container.resolve({category : "taco", format : "literal"});
+            assert.ok ('Mine' in items);
+            assert.ok ('Theirs' in items);
+        });
+
+        it ('should format the types properly when array is supplied.', function (){
+            container.define({ name : "Mine", type : Mine, category : "taco" })
+                .define({ name : "Theirs", type : Theirs, category : "taco"})
+
+            var items = container.resolve({category : "taco", format : "array"});
             assert.ok (items.length === 2);
             assert.ok (items[0] instanceof Mine);
             assert.ok (items[1] instanceof Theirs);
