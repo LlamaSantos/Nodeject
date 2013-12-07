@@ -68,8 +68,11 @@ describe("Nodeject", function (){
                 .define({ name : 'Theirs',      type : Theirs,          deps: ['Mine'] })
                 .define({ name : 'Other',       type : Other.create,    deps: ['Theirs', "c"]})
                 .define({ name : "Singleton",   type: Singleton,        singleton : true})
-                .define({ name : "empty", type : null })
-                .define({ name : "empty2", type : undefined });
+                .define({ name : "empty",       type : null })
+                .define({ name : "empty2",      type : undefined })
+                .define({ name : 'Theirs2',     type : Theirs,          deps: ['empty']})
+                .define({ name : 'Theirs3',     type : Theirs,          deps: ['empty2']})
+                ;
         });
 
         it ("should resolve a string type", function (){
@@ -126,6 +129,16 @@ describe("Nodeject", function (){
 
         it ("should resolve a type that returns undefined", function (){
             assert.equal(undefined, container.resolve("empty2"), "Value should be undefined.");
+        });
+
+        it ('should resolve a type that has a null argument', function (){
+            var t = container.resolve('Theirs2');
+            assert.equal(null, t.mine, "Value should be null");
+        });
+
+        it ('should resolve a type that has an undefined argument', function (){
+            var t = container.resolve('Theirs3');
+            assert.equal(undefined, t.mine, "Value should be undefined");
         });
     });
 
