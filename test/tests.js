@@ -67,7 +67,9 @@ describe("Nodeject", function (){
                 .define({ name : 'Mine',        type : Mine,            deps: ['a', 'b'] })
                 .define({ name : 'Theirs',      type : Theirs,          deps: ['Mine'] })
                 .define({ name : 'Other',       type : Other.create,    deps: ['Theirs', "c"]})
-                .define({ name : "Singleton",   type: Singleton,        singleton : true});
+                .define({ name : "Singleton",   type: Singleton,        singleton : true})
+                .define({ name : "empty", type : null })
+                .define({ name : "empty2", type : undefined });
         });
 
         it ("should resolve a string type", function (){
@@ -117,6 +119,14 @@ describe("Nodeject", function (){
             var s2 = container.resolve("Singleton");
             assert.equal(s2.value, 1, "Singleton is being created more than once.");
         });
+
+        it ("should resolve a type that is null", function (){
+            assert.equal(null, container.resolve("empty"), "Value should be null.");
+        });
+
+        it ("should resolve a type that returns undefined", function (){
+            assert.equal(undefined, container.resolve("empty2"), "Value should be undefined.");
+        });
     });
 
     describe("Defining and resolving categories", function (){
@@ -163,4 +173,5 @@ describe("Nodeject", function (){
             assert.ok (items[1] instanceof Theirs);
         });
     });
+
 });
