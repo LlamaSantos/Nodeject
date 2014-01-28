@@ -8,6 +8,21 @@ var Mine = types.Mine,
     Singleton = types.Singleton;
 
 describe("Nodeject", function (){
+    describe("Defining global options", function (){
+        var container = null;
+
+        it ('should configure singleton on all entities with a default of true', function (){
+            container = new Nodeject({ singleton : true });
+            container.define({ name : "Mine", type : Mine });
+            assert.ok(container.cache.Mine.singleton, true);
+        });
+
+        it ('should configure a singleton on all entities with a default of false', function (){
+            container = new Nodeject({ singleton : false });
+            container.define({ name : "Mine2", type : Mine });
+            assert.ok(container.cache.Mine2.singleton === false);
+        });
+    });
     describe("Defining a dependency", function (){
         var container = null;
         beforeEach(function (){
@@ -55,6 +70,48 @@ describe("Nodeject", function (){
                 assert.ok(obj[i], (i + 1), "Values are not properly configured in an array in the container.");
             }
         });
+    });
+
+    describe("Wrapping a dependency", function (){
+        var container = null;
+        beforeEach(function (){
+            container = new Nodeject({ singleton : true });
+            container.define({ name : "app", type : function (){
+                return {
+                    bus : {
+                        on : function (){ return "on called"; }
+                    }
+                };
+            }})
+        });
+
+        it('Should resolve a sub-entity of an existing configured type', function (){
+
+            container.define({ name : 'bus', 
+                wrap : {
+                    resolve : 'bus',
+                    context : 'app'
+                }
+            });
+            
+            var bus = container.resolve('bus');
+            assert.ok(bus.on(), 'on called');
+        });
+
+        it ('Should resolve a global entity when wrapped', function (){
+            var $ = {
+                value : 'Goes here'
+            };
+            
+            container.define({ name : '$', 
+                wrap : {
+                    resolve : $
+                }
+            });
+            
+            var e = container.resolve("$");
+            assert.ok(e.value, 'Goes here');
+        })
     });
 
     describe("Resolving a dependency", function (){

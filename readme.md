@@ -43,6 +43,37 @@ function resolve(moduleName) { ... };
 var module1 = container.resolve("moduleName");
 ```
 
+###wrap
+Nodeject now supports wrapping of global entities along with resolving a field off of another bound entity.
+```JavaScript
+// Wrapping a global or other entity
+container.define({ name : '$', 
+    wrap : {
+        resolve : jQuery
+    }
+});
+var $ = container.resolve('$');
+
+// Binding a field to a resolvable name
+container.define({ name : "app", 
+    type : function (){
+        return {
+            bus : {
+                on : function (){ "..."; }
+            }
+        };
+    }
+});
+container.define({ name : 'bus', 
+    wrap : {
+        resolve : 'bus',
+        context : 'app'
+    }
+});
+var bus = container.resolve('bus');
+
+```
+
 ###categories
 Categories are a way of configuring multiple items and resolving them under a single name.  This is helpful when configuring
 controllers or presenters where initialization needs to occur in bulk.
