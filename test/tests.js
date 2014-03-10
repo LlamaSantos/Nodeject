@@ -244,4 +244,12 @@ describe("Nodeject", function (){
         });
     });
 
+    describe("Defining a type that directly requires an object literal from a module", function (){
+        it("should correctly resolve a type.", function (){
+            var container = new Nodeject({singleton : true});
+            container.define({name : "typeo", category : "stuff", wrap : {resolve : require('./mod.js')}});
+            var type = container.resolve({ category : "stuff" });
+            assert.ok(type);
+        });
+    });
 });
