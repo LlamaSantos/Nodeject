@@ -1,6 +1,6 @@
 {
     "name" : "nodeject",
-    "version" : "0.4.4",
+    "version" : "0.4.6",
     "description" : "A simple dependency injection module for JavaScript.  Works as both a node.js module and as a browser module.  CommonJS compatible.",
     "author" : "James White <james@llamasantos.com>",
     "main" : "./lib/index.js",
