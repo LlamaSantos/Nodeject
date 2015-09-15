@@ -1,3 +1,5 @@
+'use strict';
+
 var assert   = require("assert"),
     Nodeject = require("../lib/index.js"),
     types    = require("./types.js");
@@ -252,9 +254,76 @@ describe("Nodeject", function () {
   describe("Defining a type that directly requires an object literal from a module", function () {
     it("should correctly resolve a type.", function () {
       var container = new Nodeject({ singleton: true });
-      container.define({ name: "typeo", category: "stuff", wrap: { resolve: require('./mod.js') } });
+      container.define({ name: "type", category: "stuff", wrap: { resolve: require('./mod.js') } });
       var type = container.resolve({ category: "stuff" });
       assert.ok(type);
+    });
+  });
+
+  describe("Defining and resolving compound keys", function () {
+    var container = null;
+    beforeEach(function () {
+      container = new Nodeject({
+        singleton: true,
+        compoundKeys: {
+          delimiter: '::'
+        }
+      });
+
+      container.define({
+        name: 'main',
+        category: 'module1',
+        type: function () {
+          return { name: 'module1->main' };
+        }
+      });
+
+      container.define({
+        name: 'main',
+        category: 'module2',
+        type: function () {
+          return { name: 'module2->main' };
+        }
+      });
+
+      container.define({
+        name: 'aside',
+        category: 'module2',
+        type: function () {
+          return { name: 'module2->aside' };
+        }
+      });
+    });
+
+    it("should correctly resolve a compound key using resolve method.", function () {
+      assert.ok(container.resolve('module1::main') === container.resolve({ category: 'module1', name: 'main' }));
+      assert.ok(container.resolve('module2::main') === container.resolve({ category: 'module2', name: 'main' }));
+      assert.ok(container.resolve('module2::aside') === container.resolve({ category: 'module2', name: 'aside' }));
+    });
+
+    it("should correctly resolve a category with compound keys", function () {
+      var parts = container.resolve({ category: 'module2' });
+      assert.ok(parts.length === 2);
+      assert.ok(parts[0] === container.resolve({ category: 'module2', name: 'main' }));
+      assert.ok(parts[1] === container.resolve({ category: 'module2', name: 'aside' }));
+    });
+
+    it("should correctly resolve a compound key as a dependency.", function () {
+      container.define({
+        name: 'aggr',
+        type: function (anotherModule, main, aside) {
+          return {
+            anotherModule: anotherModule,
+            main: main,
+            aside: aside
+          };
+        },
+        deps: ['module1::main', 'module2::main', 'module2::aside']
+      });
+      var aggr = container.resolve('aggr');
+      assert.ok(aggr.anotherModule === container.resolve({ category: 'module1', name: 'main' }));
+      assert.ok(aggr.main === container.resolve({ category: 'module2', name: 'main' }));
+      assert.ok(aggr.aside === container.resolve({ category: 'module2', name: 'aside' }));
     });
   });
 });
