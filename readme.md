@@ -47,7 +47,7 @@ var module1 = container.resolve("moduleName");
 Nodeject now supports wrapping of global entities along with resolving a field off of another bound entity.
 ```JavaScript
 // Wrapping a global or other entity
-container.define({ name : '$', 
+container.define({ name : '$',
     wrap : {
         resolve : jQuery
     }
@@ -55,7 +55,7 @@ container.define({ name : '$',
 var $ = container.resolve('$');
 
 // Binding a field to a resolvable name
-container.define({ name : "app", 
+container.define({ name : "app",
     type : function (){
         return {
             bus : {
@@ -64,7 +64,7 @@ container.define({ name : "app",
         };
     }
 });
-container.define({ name : 'bus', 
+container.define({ name : 'bus',
     wrap : {
         resolve : 'bus',
         context : 'app'
@@ -79,16 +79,17 @@ Categories are a way of configuring multiple items and resolving them under a si
 controllers or presenters where initialization needs to occur in bulk.
 ```JavaScript
 // Configure the container with entities having a common category
-container.define({
+container
+  .define({
     name : "module1",
     type : MyType,
     category : "category1"
-})
-.define({
+  })
+  .define({
     name : "module2",
     type : MyOtherType,
     category : "category1"
-})
+  });
 
 var entities = container.resolve({ category : "category1" });
 assert.ok (entities[0] instanceof MyType);          // asserts true
@@ -97,4 +98,38 @@ assert.ok (entities[1] instanceof MyOtherType);     // asserts true
 var entities = container.resolve({ category : "category1", format : "literal" });
 assert.ok ("module1" in entities);                  // asserts true
 assert.ok ("module2" in entities);                  // asserts true
+```
+
+###compound keys
+```JavaScript
+// In order to enable compound keys feature you have to specify compoundKeys/delimiter option
+var container = new Nodeject({
+  singleton: true,
+  compoundKeys: {
+    delimiter: '::'
+  }
+});
+
+// Configure the container with two identical names in two different categories
+container
+  .define({
+    name : "main",
+    category : "moduleOne",
+    type : MyType
+  })
+  .define({
+    name : "main",
+    category : "moduleTwo",
+    type : MyOtherType
+  });
+
+var moduleOneMain = container.resolve('moduleOne::main');
+// what is the same as
+moduleOneMain = container.resolve({ category: 'moduleOne', name: 'main' });
+// and now you can use compound keys when you define deps
+container.define({
+  name: 'aggr',
+  type: AggrType,
+  deps: ['moduleOne::main', 'moduleTwo::main']
+});
 ```
