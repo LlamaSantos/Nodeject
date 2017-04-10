@@ -1,15 +1,15 @@
-#Usage
+# Usage
 
 The container is simple.  You use define and resolve to manage all dependencies.
 
 [![Build Status](https://travis-ci.org/LlamaSantos/Nodeject.png?branch=master)](https://travis-ci.org/LlamaSantos/Nodeject)
 
-##Todo
+## Todo
 - Cyclical dependency detection.
 - Better lifetime management, singleton flag is nice, but there are more than just transient and singleton lifetimes.
 - Browser script to be used in AMD/CommonJS/POJS(Plain Old Javascript).
 
-###Example
+### Example
 ```JavaScript
 var container = new Nodeject();
 
@@ -19,7 +19,7 @@ container.define({ name : "module1", type : require("module1") })
  var module2Impl = container.resolve("module2");
 ```
 
-###define
+### define
 ```JavaScript
 //Uses the options pattern to configure an entity.
 function define(options) { ... };
@@ -35,7 +35,7 @@ container.define({
 
 
 
-###resolve
+### resolve
 ```JavaScript
 // Resolves with a single module name.
 function resolve(moduleName) { ... };
@@ -43,7 +43,7 @@ function resolve(moduleName) { ... };
 var module1 = container.resolve("moduleName");
 ```
 
-###wrap
+### wrap
 Nodeject now supports wrapping of global entities along with resolving a field off of another bound entity.
 ```JavaScript
 // Wrapping a global or other entity
@@ -74,7 +74,7 @@ var bus = container.resolve('bus');
 
 ```
 
-###categories
+### categories
 Categories are a way of configuring multiple items and resolving them under a single name.  This is helpful when configuring
 controllers or presenters where initialization needs to occur in bulk.
 ```JavaScript
@@ -100,7 +100,7 @@ assert.ok ("module1" in entities);                  // asserts true
 assert.ok ("module2" in entities);                  // asserts true
 ```
 
-###compound keys
+### compound keys
 ```JavaScript
 // In order to enable compound keys feature you have to specify compoundKeys/delimiter option
 var container = new Nodeject({
